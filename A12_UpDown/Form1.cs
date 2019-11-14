@@ -14,6 +14,7 @@ namespace A12_UpDown
 {
     public partial class Form1 : Form
     {
+        #region//初始声明
         Product Pdt = new Product();
         SQL SQL = new SQL();
         DataTable dataTable = new DataTable();
@@ -23,6 +24,8 @@ namespace A12_UpDown
         string PartNumber = null;  //零件号 二维码扫码所得
         string Uptime = null;  //上升时间
         string Downtime = null; //下降时间
+        double offset = 0;//定时器+底层调用时间补偿
+             
 
         string[] Platfortime = new string[11];
         string[] PlatforPartNumber = new string[11];
@@ -76,6 +79,30 @@ namespace A12_UpDown
         public bool IsStart8;
         public bool IsStart9;
         public bool IsStart10;
+
+
+        public long[] Uptimedate1 = new long[100];
+        public long[] Uptimedate2 = new long[100];
+        public long[] Uptimedate3 = new long[100];
+        public long[] Uptimedate4 = new long[100];
+        public long[] Uptimedate5 = new long[100];
+        public long[] Uptimedate6 = new long[100];
+        public long[] Uptimedate7 = new long[100];
+        public long[] Uptimedate8 = new long[100];
+        public long[] Uptimedate9 = new long[100];
+        public long[] Uptimedate10 = new long[100];
+
+        public long[] Downtimedate1 = new long[100];
+        public long[] Downtimedate2 = new long[100];
+        public long[] Downtimedate3 = new long[100];
+        public long[] Downtimedate4 = new long[100];
+        public long[] Downtimedate5 = new long[100];
+        public long[] Downtimedate6 = new long[100];
+        public long[] Downtimedate7 = new long[100];
+        public long[] Downtimedate8 = new long[100];
+        public long[] Downtimedate9 = new long[100];
+        public long[] Downtimedate10 = new long[100];
+        #endregion
 
         public Form1()
         {
@@ -134,6 +161,7 @@ namespace A12_UpDown
                 {
                     stopwatch1.Stop();
                     label20.Text = "上升时间：" + stopwatch1.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate1[updowncount1] = stopwatch1.ElapsedMilliseconds;
                     A1 = 2;
                     label19.Text = "升降状态：上升到顶";
                     stopwatch1.Reset();
@@ -151,13 +179,17 @@ namespace A12_UpDown
                     label21.Text = "下降时间：" + stopwatch1.ElapsedMilliseconds.ToString() + " ms";
                     A1 = 0;
                     label19.Text = "升降状态：下降到底";
+                    Downtimedate1[updowncount1] = stopwatch1.ElapsedMilliseconds;
                     updowncount1++;
                     label3.Text = "升降次数： " + updowncount1.ToString();
                     if (updowncount1 >= 10)
                     {
                         A1 = 0;
                         updowncount1 = 0;
-                        SQLUpDate("2252", "555", Platfortime[1], PlatforPartNumber[1], "1");
+                        double uptimeavg = Uptimedate1.Average()-offset;
+                        double downtimeavg = Downtimedate1.Average()-offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "1");
+                        SQLUpDate("'"+uptimeavg.ToString()+"'", "'" + downtimeavg.ToString() + "'", Platfortime[1], PlatforPartNumber[1], "1");
                         label28.Text = "台架1状态:结束";
                         IsStart1 = false;
                     }
@@ -178,6 +210,7 @@ namespace A12_UpDown
                 {
                     stopwatch2.Stop();
                     label34.Text = "上升时间：" + stopwatch2.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate2[updowncount2] = stopwatch2.ElapsedMilliseconds;
                     A2 = 2;
                     label35.Text = "升降状态：上升到顶";
                     stopwatch2.Reset();
@@ -193,6 +226,7 @@ namespace A12_UpDown
                 {
                     stopwatch2.Stop();
                     label33.Text = "下降时间：" + stopwatch2.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate2[updowncount2] = stopwatch2.ElapsedMilliseconds;
                     A2 = 0;
                     label35.Text = "升降状态：下降到底";
                     updowncount2++;
@@ -201,7 +235,10 @@ namespace A12_UpDown
                     {
                         A2 = 0;
                         updowncount2 = 0;
-                        SQLUpDate("2252", "555", Platfortime[2], PlatforPartNumber[2], "2");
+                        double uptimeavg = Uptimedate2.Average() - offset;
+                        double downtimeavg = Downtimedate2.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "2");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[2], PlatforPartNumber[2], "2");
                         label36.Text = "台架2状态:结束";
                         IsStart2 = false;
                     }
@@ -222,6 +259,7 @@ namespace A12_UpDown
                 {
                     stopwatch3.Stop();
                     label38.Text = "上升时间：" + stopwatch3.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate3[updowncount3] = stopwatch3.ElapsedMilliseconds;
                     A3 = 2;
                     label39.Text = "升降状态：上升到顶";
                     stopwatch3.Reset();
@@ -237,6 +275,7 @@ namespace A12_UpDown
                 {
                     stopwatch3.Stop();
                     label37.Text = "下降时间：" + stopwatch3.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate3[updowncount3] = stopwatch3.ElapsedMilliseconds;
                     A3 = 0;
                     label39.Text = "升降状态：下降到底";
                     updowncount3++;
@@ -245,7 +284,10 @@ namespace A12_UpDown
                     {
                         A3 = 0;
                         updowncount3 = 0;
-                        SQLUpDate("2252", "555", Platfortime[3], PlatforPartNumber[3], "3");
+                        double uptimeavg = Uptimedate3.Average() - offset;
+                        double downtimeavg = Downtimedate3.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "3");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[3], PlatforPartNumber[3], "3");
                         label40.Text = "台架3状态:结束";
                         IsStart3 = false;
                     }
@@ -266,6 +308,7 @@ namespace A12_UpDown
                 {
                     stopwatch4.Stop();
                     label42.Text = "上升时间：" + stopwatch4.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate4[updowncount4] = stopwatch4.ElapsedMilliseconds;
                     A4 = 2;
                     label43.Text = "升降状态：上升到顶";
                     stopwatch4.Reset();
@@ -281,6 +324,7 @@ namespace A12_UpDown
                 {
                     stopwatch4.Stop();
                     label41.Text = "下降时间：" + stopwatch4.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate4[updowncount4] = stopwatch4.ElapsedMilliseconds;
                     A4 = 0;
                     label43.Text = "升降状态：下降到底";
                     updowncount4++;
@@ -288,8 +332,11 @@ namespace A12_UpDown
                     if (updowncount4 >= 10)
                     {
                         A4 = 0;
-                        updowncount4 = 0;
-                        SQLUpDate("2252", "555", Platfortime[4], PlatforPartNumber[4], "4");
+                        updowncount4 = 0; 
+                        double uptimeavg = Uptimedate4.Average() - offset;
+                        double downtimeavg = Downtimedate4.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "4");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[4], PlatforPartNumber[4], "4");
                         label44.Text = "台架4状态:结束";
                         IsStart4 = false;
                     }
@@ -310,6 +357,7 @@ namespace A12_UpDown
                 {
                     stopwatch5.Stop();
                     label46.Text = "上升时间：" + stopwatch5.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate5[updowncount5] = stopwatch5.ElapsedMilliseconds;
                     A5 = 2;
                     label47.Text = "升降状态：上升到顶";
                     stopwatch5.Reset();
@@ -325,6 +373,7 @@ namespace A12_UpDown
                 {
                     stopwatch5.Stop();
                     label45.Text = "下降时间：" + stopwatch5.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate5[updowncount5] = stopwatch5.ElapsedMilliseconds;
                     A5 = 0;
                     label47.Text = "升降状态：下降到底";
                     updowncount5++;
@@ -333,7 +382,10 @@ namespace A12_UpDown
                     {
                         A5 = 0;
                         updowncount5 = 0;
-                        SQLUpDate("2252", "555", Platfortime[5], PlatforPartNumber[5], "5");
+                        double uptimeavg = Uptimedate5.Average() - offset;
+                        double downtimeavg = Downtimedate5.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "5");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[5], PlatforPartNumber[5], "5");
                         label48.Text = "台架5状态:结束";
                         IsStart5 = false;
                     }
@@ -354,6 +406,7 @@ namespace A12_UpDown
                 {
                     stopwatch6.Stop();
                     label50.Text = "上升时间：" + stopwatch6.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate6[updowncount6] = stopwatch6.ElapsedMilliseconds;
                     A6 = 2;
                     label51.Text = "升降状态：上升到顶";
                     stopwatch6.Reset();
@@ -369,6 +422,7 @@ namespace A12_UpDown
                 {
                     stopwatch6.Stop();
                     label49.Text = "下降时间：" + stopwatch6.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate6[updowncount6] = stopwatch6.ElapsedMilliseconds;
                     A6 = 0;
                     label51.Text = "升降状态：下降到底";
                     updowncount6++;
@@ -377,7 +431,10 @@ namespace A12_UpDown
                     {
                         A6 = 0;
                         updowncount6 = 0;
-                        SQLUpDate("2252", "555", Platfortime[6], PlatforPartNumber[6], "6");
+                        double uptimeavg = Uptimedate6.Average() - offset;
+                        double downtimeavg = Downtimedate6.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "6");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[6], PlatforPartNumber[6], "6");
                         label52.Text = "台架6状态:结束";
                         IsStart6 = false;
                     }
@@ -398,6 +455,7 @@ namespace A12_UpDown
                 {
                     stopwatch7.Stop();
                     label54.Text = "上升时间：" + stopwatch7.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate7[updowncount7] = stopwatch7.ElapsedMilliseconds;
                     A7 = 2;
                     label55.Text = "升降状态：上升到顶";
                     stopwatch7.Reset();
@@ -413,6 +471,7 @@ namespace A12_UpDown
                 {
                     stopwatch7.Stop();
                     label53.Text = "下降时间：" + stopwatch7.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate7[updowncount7] = stopwatch7.ElapsedMilliseconds;
                     A7 = 0;
                     label55.Text = "升降状态：下降到底";
                     updowncount7++;
@@ -421,7 +480,10 @@ namespace A12_UpDown
                     {
                         A7 = 0;
                         updowncount7 = 0;
-                        SQLUpDate("2252", "555", Platfortime[7], PlatforPartNumber[7], "7");
+                        double uptimeavg = Uptimedate7.Average() - offset;
+                        double downtimeavg = Downtimedate7.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "7");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[7], PlatforPartNumber[7], "7");
                         label56.Text = "台架7状态:结束";
                         IsStart7 = false;
                     }
@@ -442,6 +504,7 @@ namespace A12_UpDown
                 {
                     stopwatch8.Stop();
                     label58.Text = "上升时间：" + stopwatch8.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate8[updowncount8] = stopwatch8.ElapsedMilliseconds;
                     A8 = 2;
                     label59.Text = "升降状态：上升到顶";
                     stopwatch8.Reset();
@@ -457,6 +520,7 @@ namespace A12_UpDown
                 {
                     stopwatch8.Stop();
                     label57.Text = "下降时间：" + stopwatch8.ElapsedMilliseconds.ToString() + " ms";
+                   Downtimedate8[updowncount8] = stopwatch8.ElapsedMilliseconds;
                     A8 = 0;
                     label59.Text = "升降状态：下降到底";
                     updowncount8++;
@@ -465,7 +529,10 @@ namespace A12_UpDown
                     {
                         A8 = 0;
                         updowncount8 = 0;
-                        SQLUpDate("2252", "555", Platfortime[8], PlatforPartNumber[8], "8");
+                        double uptimeavg = Uptimedate8.Average() - offset;
+                        double downtimeavg = Downtimedate8.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "8");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[8], PlatforPartNumber[8], "8");
                         label60.Text = "台架8状态:结束";
                         IsStart8 = false;
                     }
@@ -486,6 +553,7 @@ namespace A12_UpDown
                 {
                     stopwatch9.Stop();
                     label62.Text = "上升时间：" + stopwatch9.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate9[updowncount9] = stopwatch9.ElapsedMilliseconds;
                     A9 = 2;
                     label63.Text = "升降状态：上升到顶";
                     stopwatch9.Reset();
@@ -501,6 +569,7 @@ namespace A12_UpDown
                 {
                     stopwatch9.Stop();
                     label61.Text = "下降时间：" + stopwatch9.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate9[updowncount9] = stopwatch9.ElapsedMilliseconds;
                     A9 = 0;
                     label63.Text = "升降状态：下降到底";
                     updowncount9++;
@@ -509,7 +578,10 @@ namespace A12_UpDown
                     {
                         A9 = 0;
                         updowncount9 = 0;
-                        SQLUpDate("2252", "555", Platfortime[9], PlatforPartNumber[9], "9");
+                        double uptimeavg = Uptimedate9.Average() - offset;
+                        double downtimeavg = Downtimedate9.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "9");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[9], PlatforPartNumber[9], "9");
                         label64.Text = "台架9状态:结束";
                         IsStart9 = false;
                     }
@@ -530,6 +602,7 @@ namespace A12_UpDown
                 {
                     stopwatch10.Stop();
                     label66.Text = "上升时间：" + stopwatch10.ElapsedMilliseconds.ToString() + " ms";
+                    Uptimedate10[updowncount10] = stopwatch10.ElapsedMilliseconds;
                     A10 = 2;
                     label67.Text = "升降状态：上升到顶";
                     stopwatch10.Reset();
@@ -545,6 +618,7 @@ namespace A12_UpDown
                 {
                     stopwatch10.Stop();
                     label65.Text = "下降时间：" + stopwatch10.ElapsedMilliseconds.ToString() + " ms";
+                    Downtimedate10[updowncount10] = stopwatch10.ElapsedMilliseconds;
                     A10 = 0;
                     label67.Text = "升降状态：下降到底";
                     updowncount10++;
@@ -553,7 +627,10 @@ namespace A12_UpDown
                     {
                         A10 = 0;
                         updowncount10 = 0;
-                        SQLUpDate("2252", "555", Platfortime[10], PlatforPartNumber[10], "10");
+                        double uptimeavg = Uptimedate10.Average() - offset;
+                        double downtimeavg = Downtimedate10.Average() - offset;
+                        UpDownTimeCheck(uptimeavg, downtimeavg, "10");
+                        SQLUpDate("'" + uptimeavg.ToString() + "'", "'" + downtimeavg.ToString() + "'", Platfortime[10], PlatforPartNumber[10], "10");
                         label68.Text = "台架10状态:结束";
                         IsStart10 = false;
                     }
@@ -562,6 +639,33 @@ namespace A12_UpDown
             #endregion 
         }
 
+        private void UpDownTimeCheck(double uptimeavg,double downtimeavg,string A) //升降时间判断
+        {
+            if (uptimeavg > 1800)
+            {
+                ListBox_AddMsgToListBox("台架'"+A+"'上升时间过大");
+            }
+            else if (uptimeavg < 1200)
+            {
+                ListBox_AddMsgToListBox("台架'" + A + "'上升时间偏小");
+            }
+            else
+            {
+                ListBox_AddMsgToListBox("台架'" + A + "'上升时间正常");
+            }
+            if (downtimeavg > 1800)
+            {
+                ListBox_AddMsgToListBox("台架'" + A + "'下降时间过大");
+            }
+            else if (downtimeavg < 1200)
+            {
+                ListBox_AddMsgToListBox("台架'" + A + "'下降时间偏小");
+            }
+            else
+            {
+                ListBox_AddMsgToListBox("台架2'" + A + "'下降时间正常");
+            }
+        } 
         private void ListBox_AddMsgToListBox(string MsgStr) //添加listbox信息最多保留500条消息
         {
             listBox1.Items.Add(MsgStr);
